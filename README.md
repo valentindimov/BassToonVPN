@@ -9,17 +9,29 @@ BassToonVPN is meant for technical enthusiasts who are comfortable with the comm
 For a more comprehensive solution with a friendly Web-based UI, you probably want [wg-easy](https://github.com/wg-easy/wg-easy).
 
 ## Usage
-1. Set up an SSH key on your system: `ssh-keygen`
-2. Configure your SSH key for access to a root user on the remote machine
-3. Download, install, and run the script and follow the interactive prompts:
+The script [basstoonvpn.sh](./basstoonvpn.sh) offers a command-line interface.
+- To set up the VPN on the remote server or add a client to the VPN if it's already installed:
     ```bash
-    curl -s https://raw.githubusercontent.com/valentindimov/BassToonVPN/refs/heads/main/basstoonvpn.sh > /usr/local/bin/basstoonvpn
-    sudo chown root:root /usr/local/bin/basstoonvpn
-    sudo chmod 0555 /usr/local/bin/basstoonvpn
-    basstoonvpn
+    ./basstoonvpn.sh user@remote.server.ip.address add <mode: qr/text>
     ```
+    Depending on the `mode` argument, the WireGuard config file for the new client is printed as text or as a scannable QR code to the terminal.
+- To uninstall the VPN from a remote server, evicting all clients and shutting down the VPN:
+    ```bash
+    ./basstoonvpn.sh user@remote.server.ip.address reset
+    ```
+    If you connected to the server via VPN to do this, your connection will probably drop, but the uninstall should have worked regardless.
 
-To add more clients to an already-installed VPN server, simply run `basstoonvpn` and follow the interactive prompts again.
+Note that before doing this, you need to have created an SSH key on your PC (`ssh-keygen`) and set up the remote VM to allow SSH access using this key.
+
+## Installation
+The script doesn't require installation, but if you want, you can download and install it by running the following command in your terminal:
+```bash
+curl -s https://raw.githubusercontent.com/valentindimov/BassToonVPN/refs/heads/main/basstoonvpn.sh > /usr/local/bin/basstoonvpn
+sudo chown root:root /usr/local/bin/basstoonvpn
+sudo chmod 0555 /usr/local/bin/basstoonvpn
+```
+From that point on you can call the script simply by using `basstoonvpn`.
+To update the script, just rerun the above commands again.
 
 ### WARNING: BassToonVPN is designed for dedicated servers!
 BassToonVPN assumes the remote server is a dedicated physical device or VM.
