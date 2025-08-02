@@ -164,8 +164,9 @@ then
 	# Taking only the last 32 bytes of the DER representation gives us the raw keys, like WireGuard would use them
 	PRIV_KEY=$(echo $PRIV_KEY | base64 --decode | tail -c 32 | base64)
 	PUB_KEY=$(echo $PUB_KEY | base64 --decode | tail -c 32 | base64)
-	# Now execute the operation on the remote and extract the output
-	CLIENT_CONFIG=$(ssh -2 "$REMOTE_SSH_ADDR" "set -eo pipefail; $(declare -f add_wireguard_client); add_wireguard_client $PUB_KEY")
+	# Now execute the operation on the remote and extract the output. Pipe the input to the ssh command, and the command itself is just "sudo bash"
+	REMOTE_COMMAND="set -eo pipefail; $(declare -f add_wireguard_client); add_wireguard_client $PUB_KEY"
+	CLIENT_CONFIG=$(echo "$REMOTE_COMMAND" | ssh -2 "$REMOTE_SSH_ADDR" "sudo bash")
 	# Substitute our private key in the result from the remote. We need to escape slashes in the private key otherwise they mess up the sed command.
 	CLIENT_CONFIG=$(echo "$CLIENT_CONFIG" | sed -e "s/TODO-INSERT-YOUR-PRIVATE-KEY-HERE/$(echo $PRIV_KEY | sed -e 's/\//\\\//g')/")
 
