@@ -5,7 +5,7 @@ BassToonVPN is an interactive tool for setting up hub-and-spoke WireGuard VPNs:
 - Requires only a few common Linux utilites;
 - It can also print QR codes to your terminal for setting up mobile devices.
 
-BassToonVPN is meant for technical enthusiasts who are comfortable with the command line and are looking for a simple setup with minimal configuration necessary - all you need is a Linux virtual or physical machine with a public IP address and SSH (or console) access.
+BassToonVPN is meant for technical enthusiasts who are comfortable with the command line and are looking for a simple setup with minimal configuration necessary - all you need is a Linux virtual or physical machine with a public IP address and SSH access.
 For a more comprehensive solution with a friendly Web-based UI, you probably want [wg-easy](https://github.com/wg-easy/wg-easy).
 
 ## Usage
@@ -15,6 +15,7 @@ The script [basstoonvpn.sh](./basstoonvpn.sh) offers a command-line interface.
     ./basstoonvpn.sh user@remote.server.ip.address add <mode: qr/text>
     ```
     Depending on the `mode` argument, the WireGuard config file for the new client is printed as text or as a scannable QR code to the terminal.
+    Keep in mind that the tool does not save these config files anywhere - if you clear your terminal without copying the configuration into your WireGuard client, it is lost.
 - To uninstall the VPN from a remote server, evicting all clients and shutting down the VPN:
     ```bash
     ./basstoonvpn.sh user@remote.server.ip.address reset
@@ -43,15 +44,14 @@ It also allows SSH connections to the host, but only from inside the VPN.
 If you want to SSH to the host after initially installing the VPN, you need to activate your VPN connection and connect to `192.168.103.1`.
 
 ## Requirements
-Currently BassToonVPN supports Debian or Ubuntu systems and requires `curl`, `wireguard-tools` (more specifically the `wg-quick` utility), and `nftables` to be installed on the remote server. `qrencode` needs to be installed locally to display QR codes..
+Currently BassToonVPN supports Debian or Ubuntu systems and requires `sudo`, `curl`, `wireguard-tools` (more specifically the `wg-quick` utility), and `nftables` to be installed on the remote server. `openssl` and `qrencode` need to be installed locally (the latter is only needed to display QR codes).
 
-When the VPN is first set up on the remote server, dependencies will be installed, and the `iptables` and `firewalld` packages will be removed if they are installed since they can interfere with its firewall configuration.
+When the VPN is first set up on the remote server, dependencies will be installed (except for `sudo`, if that is somehow missing you need to install it manually), and the `iptables` and `firewalld` packages will be removed if they are installed since they can interfere with its firewall configuration.
 
 The script can be ported to other Linux distros rather easily, you just need to replace the `apt-get` commands with the corresponding alternative on your system.
 
 ## Future functionality
 The following will be worked on in the future:
-- Output the client configuration into a .conf file
 - List clients in the VPN
 - Delete clients from the VPN
 - Extend the number of possible clients
