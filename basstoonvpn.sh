@@ -152,7 +152,7 @@ then
 			fi
 		else
 			# Service is not enabled -> enable and start it
-			systemctl enable --now wg-quick@basstoonvpn.service
+			systemctl enable --now --quiet wg-quick@basstoonvpn.service
 		fi
 		# Done!
 		return 0
